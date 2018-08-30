@@ -27,6 +27,7 @@ $confirmPwdR = filter_input(INPUT_POST, 'confirmPwdR', FILTER_SANITIZE_STRING);
 $usernameL = filter_input(INPUT_POST, "usernameL");
 $pwdL = filter_input(INPUT_POST, "pwdL");
 
+
 $msgError = "";
         
 $errors = array();
@@ -73,9 +74,11 @@ function connexion($usernameL, $pwdL) {
     }
     $requeteUser = $db->prepare("SELECT * FROM tbl_user WHERE Txt_login = ? and Txt_password = ?");
     $requeteUser->execute(array($usernameL, $pwdL));
+    $user = $requeteUser->fetch();
     $utilisateurExist = $requeteUser->rowCount();
     if ($utilisateurExist == 1) {
         $_SESSION["connect"] = true;
+        $_SESSION['idUser'] = $user['idUser'];
         header("Location: confirmation.php");
     } else {
         $msgError = "Le pseudo ou le mot de passe est faux !";
