@@ -20,8 +20,8 @@ require_once './func.php';
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         try {
-            foreach ($db->query('SELECT * FROM tbl_user WHERE idUser = "'.$_SESSION['idUser'].'"') as $row) {
-                echo "Bonjour ".$row['Txt_surname'] . " " . $row['Txt_name']. ", voici votre fil d'actualité";
+            foreach ($db->query('SELECT * FROM tbl_user WHERE idUser = "' . $_SESSION['idUser'] . '"') as $row) {
+                echo "<h1>Bonjour " . $row['Txt_surname'] . " " . $row['Txt_name'] . ", voici votre fil d'actualité</h1>";
             }
         } catch (PDOException $ex) {
             echo 'An Error occured!'; // user friendly message
@@ -30,8 +30,24 @@ require_once './func.php';
         ?>
         <form method='post' action="">
             <fieldset>
-                
-            </fieldset>
-        </form>
-    </body>
-</html>
+                <legend>Nouveau post</legend>
+                    <div class="form-group">
+                        <label for="titre">Titre: </label>
+                        <br>
+                        <input type="text" class="form-control" name="title" id="title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description: </label>
+                        <br>
+                        <textarea name="description" id="description"></textarea>
+                    </div>
+
+                    <input type="submit" class="btn btn-primary" name="addNews" value="Insérer">
+                    </fieldset>
+                </form>
+                <form method="post" action="logout.php"> 
+                    <button type="submit" name="logout">Déconnexion</button>
+                </form>
+                </body>
+                </html>
