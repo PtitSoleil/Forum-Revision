@@ -36,13 +36,21 @@ $msgError = "";
 
 $errors = array();
 
-function inscription($surnameR, $nameR, $usernameR, $pwdR) {
+
+function dbConnect()
+{
     $db = new PDO('mysql:host=localhost;charset=utf8;dbname=a-distribuer', 'root');
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
+    return $db;
+}
+
+function inscription($surnameR, $nameR, $usernameR, $pwdR) {
+    $db = dbConnect();
+
     try {
-        $db->query('INSERT INTO tbl_user (Txt_surname,Txt_name,Txt_login,Txt_password) VALUES ("' . $surnameR . '","' . $nameR . '","' . $usernameR . '","' . $pwdR . '")');
+        $db->prepare('INSERT INTO tbl_user (Txt_surname,Txt_name,Txt_login,Txt_password) VALUES ("' . $surnameR . '","' . $nameR . '","' . $usernameR . '","' . $pwdR . '")');
         header("Location: index.php");
     } catch (PDOException $ex) {
         echo "An Error occured!"; // user friendly message
@@ -78,14 +86,17 @@ if (filter_has_var(INPUT_POST, 'register')) {
 
 function connexion($usernameL, $pwdL) {
     try {
-        $db = new PDO('mysql:host=localhost;dbname=a-distribuer', 'root');
+            $db = dbConnect();
     } catch (Exception $e) {
         die('Erreur : ' . $e->getMessage());
     }
     $requeteUser = $db->prepare("SELECT * FROM tbl_user WHERE Txt_login = ? and Txt_password = ?");
     $requeteUser->execute(array($usernameL, $pwdL));
+    
     $user = $requeteUser->fetch();
+    
     $utilisateurExist = $requeteUser->rowCount();
+    
     if ($utilisateurExist == 1) {
         $_SESSION["connect"] = true;
         $_SESSION['idUser'] = $user['idUser'];
@@ -101,12 +112,10 @@ if ($usernameL && $pwdL) {
 }
 
 function addNews($titre, $description, $idUser) {
-    $db = new PDO('mysql:host=localhost;dbname=a-distribuer', 'root');
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+    $db = dbConnect();
     $idUser = $_SESSION['idUser'];
     try {
-        $db->query('INSERT INTO tbl_news (Txt_title,Txt_description,idUser) VALUES ("' . $titre . '","' . $description . '","' . $idUser . '")');
+        $db->prepare('INSERT INTO tbl_news (Txt_title,Txt_description,idUser) VALUES ("' . $titre . '","' . $description . '","' . $idUser . '")');
         header("Location: ./main.php");
     } catch (PDOException $ex) {
         echo "An Error occured!"; // user friendly message
@@ -128,9 +137,7 @@ if (filter_has_var(INPUT_POST, 'addNews')) {
 }
 
 function showNews() {
-    $db = new PDO('mysql:host=localhost;charset=utf8;dbname=a-distribuer', 'root');
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+    $db = dbConnect();
     try {
         foreach ($db->query('SELECT * FROM tbl_news') as $row) {
             echo "<h3>". $row['Txt_title'] . "</h3>";

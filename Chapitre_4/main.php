@@ -18,14 +18,16 @@ require_once './func.php';
         </style>
     </head>
     <body>
-        <?php 
-        if (isset($errors['title'])) { echo "<h2>" . $errors['title'] . "</h2>"; }
+        <?php
+        if (isset($errors['title'])) {
+            echo "<h2>" . $errors['title'] . "</h2>";
+        }
         echo "<br>";
-        if (isset($errors['description'])) { echo "<h2>" . $errors['description'] . "</h2>"; } 
+        if (isset($errors['description'])) {
+            echo "<h2>" . $errors['description'] . "</h2>";
+        }
 
-        $db = new PDO('mysql:host=localhost;charset=utf8;dbname=a-distribuer', 'root');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $db = dbConnect();
         try {
             foreach ($db->query('SELECT * FROM tbl_user WHERE idUser = "' . $_SESSION['idUser'] . '"') as $row) {
                 echo "<h1>Bonjour " . $row['Txt_surname'] . " " . $row['Txt_name'] . ", voici votre fil d'actualité</h1>";
@@ -38,22 +40,22 @@ require_once './func.php';
         <form method='post' action="">
             <fieldset>
                 <legend>Nouveau post</legend>
-                    <div class="form-group">
-                        <label for="titre">Titre: </label>
-                        <br>
-                        <input type="text" name="title" id="title">
-                        <br>
-                        <label for="description">Description: </label>
-                        <br>
-                        <textarea rows="35" cols="260" name="description" id="description"></textarea>
-                    </div>
+                <div class="form-group">
+                    <label for="titre">Titre: </label>
+                    <br>
+                    <input type="text" name="title" id="title">
+                    <br>
+                    <label for="description">Description: </label>
+                    <br>
+                    <textarea rows="35" cols="260" name="description" id="description"></textarea>
+                </div>
 
-                    <input type="submit" name="addNews" value="Insérer">
-                    </fieldset>
-                </form>
-                <form method="post" action="logout.php"> 
-                    <button type="submit" name="logout">Déconnexion</button>
-                </form>
-        <?php echo showNews() ?>
+                <input type="submit" name="addNews" value="Insérer">
+            </fieldset>
+        </form>
+        <form method="post" action="logout.php"> 
+            <button type="submit" name="logout">Déconnexion</button>
+        </form>
+<?php echo showNews() ?>
     </body>
 </html>
