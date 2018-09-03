@@ -1,11 +1,9 @@
 <?php
-
 /*
-  Auteur : Guner, Adar, I.DA-P2B
-  Projet : Quiz !
-  Fichier : Quiz !
-  Description : Jeu de quiz avec plusieurs questions de différentes catégories
-  Version : 06.06.2018
+  Auteur : Guner, Adar, I.DA-P3B
+  Projet : A Distribuer
+  Description : Se connecter puis ajouter des news
+  Version : 03.09.2018
  */
 
 if (session_status() == PHP_SESSION_NONE) {

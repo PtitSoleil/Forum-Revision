@@ -2,7 +2,6 @@
 /*
   Auteur : Guner, Adar, I.DA-P3B
   Projet : A Distribuer
-  Fichier : A Distribuer
   Description : Se connecter puis ajouter des news
   Version : 30.08.2018
  */
