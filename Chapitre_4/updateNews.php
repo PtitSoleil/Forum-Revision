@@ -47,12 +47,11 @@ require_once './func.php';
                     <textarea rows="35" cols="260" name="description" id="description"></textarea>
                 </div>
 
-                <input type="submit" name="addNews" value="Insérer">
+                <input type="submit" name="updateNews" value="Modifier">
             </fieldset>
         </form>
         <form method="post" action="logout.php"> 
             <button type="submit" name="logout">Déconnexion</button>
         </form>
-            <?php echo showNews() ?>
     </body>
 </html>

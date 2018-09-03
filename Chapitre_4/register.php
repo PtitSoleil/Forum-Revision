@@ -2,9 +2,8 @@
 /*
   Auteur : Guner, Adar, I.DA-P3B
   Projet : A Distribuer
-  Fichier : A Distribuer
   Description : Se connecter puis ajouter des news
-  Version : 30.08.2018
+  Version : 03.09.2018
  */
 
 require_once './func.php';
@@ -14,9 +13,7 @@ require_once './func.php';
     <head>
         <meta charset="UTF-8">
         <title></title>
-        <style type="text/css">
-            .error { color :red; }
-        </style>
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
     </head>
     <body>
         <form method='post' action="">

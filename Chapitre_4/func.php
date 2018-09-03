@@ -30,15 +30,16 @@ $pwdL = filter_input(INPUT_POST, "pwdL", FILTER_SANITIZE_STRING);
 $titre = filter_input(INPUT_POST, "title", FILTER_SANITIZE_STRING);
 $description = filter_input(INPUT_POST, "description", FILTER_SANITIZE_STRING);
 
-$idUser = $_SESSION['idUser'];
+//$idUser = $_SESSION['idUser'];
 
 $msgError = "";
 
+$date = date("Y-m-d H:i:s");
+
+$lastdate = date("Y-m-d H:i:s");
 $errors = array();
 
-
-function dbConnect()
-{
+function dbConnect() {
     $db = new PDO('mysql:host=localhost;charset=utf8;dbname=a-distribuer', 'root');
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
@@ -50,7 +51,7 @@ function inscription($surnameR, $nameR, $usernameR, $pwdR) {
     $db = dbConnect();
 
     try {
-        $db->prepare('INSERT INTO tbl_user (Txt_surname,Txt_name,Txt_login,Txt_password) VALUES ("' . $surnameR . '","' . $nameR . '","' . $usernameR . '","' . $pwdR . '")');
+        $db->query('INSERT INTO tbl_user (Txt_surname,Txt_name,Txt_login,Txt_password) VALUES ("' . $surnameR . '","' . $nameR . '","' . $usernameR . '","' . $pwdR . '")');
         header("Location: index.php");
     } catch (PDOException $ex) {
         echo "An Error occured!"; // user friendly message
@@ -86,17 +87,17 @@ if (filter_has_var(INPUT_POST, 'register')) {
 
 function connexion($usernameL, $pwdL) {
     try {
-            $db = dbConnect();
+        $db = dbConnect();
     } catch (Exception $e) {
         die('Erreur : ' . $e->getMessage());
     }
     $requeteUser = $db->prepare("SELECT * FROM tbl_user WHERE Txt_login = ? and Txt_password = ?");
     $requeteUser->execute(array($usernameL, $pwdL));
-    
+
     $user = $requeteUser->fetch();
-    
+
     $utilisateurExist = $requeteUser->rowCount();
-    
+
     if ($utilisateurExist == 1) {
         $_SESSION["connect"] = true;
         $_SESSION['idUser'] = $user['idUser'];
@@ -111,11 +112,11 @@ if ($usernameL && $pwdL) {
     connexion($usernameL, $pwdL);
 }
 
-function addNews($titre, $description, $idUser) {
+function addNews($titre, $description, $idUser, $date, $lastdate) {
     $db = dbConnect();
     $idUser = $_SESSION['idUser'];
     try {
-        $db->prepare('INSERT INTO tbl_news (Txt_title,Txt_description,idUser) VALUES ("' . $titre . '","' . $description . '","' . $idUser . '")');
+        $db->query('INSERT INTO tbl_news (Txt_title,Txt_description,idUser,creationDate,lastEditDate) VALUES ("' . $titre . '","' . $description . '","' . $idUser . '","' . $date . '","' . $lastdate . '")');
         header("Location: ./main.php");
     } catch (PDOException $ex) {
         echo "An Error occured!"; // user friendly message
@@ -132,7 +133,7 @@ if (filter_has_var(INPUT_POST, 'addNews')) {
     }
 
     if (empty($errors)) {
-        addNews($titre, $description, $idUser);
+        addNews($titre, $description, $idUser, $date, $lastdate);
     }
 }
 
@@ -140,10 +141,14 @@ function showNews() {
     $db = dbConnect();
     try {
         foreach ($db->query('SELECT * FROM tbl_news') as $row) {
-            echo "<h3>". $row['Txt_title'] . "</h3>";
+            echo "<div id='news'>";
+            echo "Auteur :" . $row['idUser'];
             echo "<br>";
+            echo "Posté le ". $row['creationDate'] . ". Dernière modification le " . $row['lastEditDate'];
+            echo "<h3>" . $row['Txt_title'] . "</h3>";
             echo $row['Txt_description'];
             echo "<br>";
+            echo "</div>";
         }
     } catch (PDOException $ex) {
         echo 'An Error occured!'; // user friendly message

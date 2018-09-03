@@ -1,0 +1,6 @@
+.error { color :red; }
+
+#news {
+    border: solid 1px black;
+    background-color: grey;
+}
