@@ -7,6 +7,28 @@
  */
 
 require_once './func.php';
+
+if(isset($_GET['id'])){
+    $idNews = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
+    if($idNews == ''){
+        header('Location: main.php');
+        exit;
+    }
+}
+
+if(isset($_POST['updateNews'])){
+    $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
+    $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+    $idNews = filter_input(INPUT_POST, 'idNews', FILTER_VALIDATE_INT);
+    if ($title != '' and $description != '' and $idNews) {
+        updateNews($idNews, $title, $description);
+        header('Location: main.php');
+        exit;
+    }
+}
+
+$news = GetNews($idNews);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,14 +51,15 @@ require_once './func.php';
         <form method='post' action="">
             <fieldset>
                 <legend>Nouveau post</legend>
+                <input type="hidden" name="idNews" value="<?= $news['idNews'] ?>"/>
                 <div class="form-group">
                     <label for="titre">Titre: </label>
                     <br>
-                    <input type="text" name="title" id="title">
+                    <input type="text" name="title" id="title" value="<?= isset($news) ? $news['Txt_title'] : '' ?>">
                     <br>
                     <label for="description">Description: </label>
                     <br>
-                    <textarea rows="35" cols="260" name="description" id="description"></textarea>
+                    <textarea rows="35" cols="260" name="description" id="description"><?= isset($news) ? $news['Txt_description'] : '' ?></textarea>
                 </div>
 
                 <input type="submit" name="updateNews" value="Modifier">

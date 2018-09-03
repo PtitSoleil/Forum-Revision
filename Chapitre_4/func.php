@@ -34,9 +34,6 @@ $description = filter_input(INPUT_POST, "description", FILTER_SANITIZE_STRING);
 
 $msgError = "";
 
-$date = date("Y-m-d H:i:s");
-
-$lastdate = date("Y-m-d H:i:s");
 $errors = array();
 
 //Fonction pour connecter la base de données
@@ -117,11 +114,11 @@ if ($usernameL && $pwdL) {
 }
 
 //Fonction pour ajouter une nouvelles
-function addNews($titre, $description, $idUser, $date, $lastdate) {
+function addNews($titre, $description, $idUser) {
     $db = dbConnect();
     $idUser = $_SESSION['idUser'];
     try {
-        $db->query('INSERT INTO tbl_news (Txt_title,Txt_description,idUser,creationDate,lastEditDate) VALUES ("' . $titre . '","' . $description . '","' . $idUser . '","' . $date . '","' . $lastdate . '")');
+        $db->query('INSERT INTO tbl_news (Txt_title,Txt_description,idUser) VALUES ("' . $titre . '","' . $description . '","' . $idUser . '")');
         header("Location: ./main.php");
     } catch (PDOException $ex) {
         echo "An Error occured!"; // user friendly message
@@ -153,10 +150,10 @@ function showNews() {
             echo "<br>";
             echo "Posté le " . $row['creationDate'] . ". Dernière modification le " . $row['lastEditDate'];
             echo "<h3>" . $row['Txt_title'] . "</h3>";
-            echo $row['Txt_description'];
+            echo nl2br($row['Txt_description']);
             echo "<br>";
             echo "<nav>";
-            echo "<a href='./updateNews.php'>Modifier</a>";
+            echo "<a href='./updateNews.php?id=" . $row['idNews'] . "'>Modifier</a>";
             echo "<a href='./func.php?deleteNews=" . $row['idNews'] . "'>Supprimer</a>";
             echo "</nav>";
             echo "</div>";
@@ -173,6 +170,9 @@ function deleteNews($idNews) {
 
     $req = $db->prepare("DELETE FROM tbl_news WHERE idNews = ?");
     $req->execute(array($idNews));
+
+    header("Location: main.php");
+    exit;
 }
 
 //Traitement
@@ -180,6 +180,17 @@ if (isset($_GET['deleteNews'])) {
     deleteNews($_GET['deleteNews']);
 }
 
-function updateNews() {
+function updateNews($idNews, $title, $description) {
+    $db = dbConnect();
     
+    $req = $db->prepare("UPDATE tbl_news SET Txt_title = ?, Txt_description = ?, lastEditDate = now()  WHERE idNews = ?");
+    return $req->execute([$title, $description, $idNews]);
+    
+}
+
+function GetNews($id) {
+    $db = dbConnect();
+    $request = $db->prepare('SELECT idNews, Txt_title, Txt_description FROM tbl_news WHERE idNews = ?');
+    $request->execute([$id]);
+    return $request ? $request->fetch() : false;
 }
