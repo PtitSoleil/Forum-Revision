@@ -39,6 +39,7 @@ $date = date("Y-m-d H:i:s");
 $lastdate = date("Y-m-d H:i:s");
 $errors = array();
 
+//Fonction pour connecter la base de données
 function dbConnect() {
     $db = new PDO('mysql:host=localhost;charset=utf8;dbname=a-distribuer', 'root');
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -47,6 +48,7 @@ function dbConnect() {
     return $db;
 }
 
+//Fonction pour l'inscription
 function inscription($surnameR, $nameR, $usernameR, $pwdR) {
     $db = dbConnect();
 
@@ -59,6 +61,7 @@ function inscription($surnameR, $nameR, $usernameR, $pwdR) {
     }
 }
 
+//Traitement
 if (filter_has_var(INPUT_POST, 'register')) {
     if (empty($surnameR)) {
         $errors["surnameR"] = "Le prénom n'est pas valide";
@@ -85,6 +88,7 @@ if (filter_has_var(INPUT_POST, 'register')) {
     }
 }
 
+//Fonction pour la connexion
 function connexion($usernameL, $pwdL) {
     try {
         $db = dbConnect();
@@ -112,6 +116,7 @@ if ($usernameL && $pwdL) {
     connexion($usernameL, $pwdL);
 }
 
+//Fonction pour ajouter une nouvelles
 function addNews($titre, $description, $idUser, $date, $lastdate) {
     $db = dbConnect();
     $idUser = $_SESSION['idUser'];
@@ -124,6 +129,7 @@ function addNews($titre, $description, $idUser, $date, $lastdate) {
     }
 }
 
+//Traitement
 if (filter_has_var(INPUT_POST, 'addNews')) {
     if (empty($titre)) {
         $errors["title"] = "La saisie d'un titre est obligatoire!";
@@ -137,6 +143,7 @@ if (filter_has_var(INPUT_POST, 'addNews')) {
     }
 }
 
+//Fonction pour montrer la news
 function showNews() {
     $db = dbConnect();
     try {
@@ -144,14 +151,30 @@ function showNews() {
             echo "<div id='news'>";
             echo "Auteur :" . $row['idUser'];
             echo "<br>";
-            echo "Posté le ". $row['creationDate'] . ". Dernière modification le " . $row['lastEditDate'];
+            echo "Posté le " . $row['creationDate'] . ". Dernière modification le " . $row['lastEditDate'];
             echo "<h3>" . $row['Txt_title'] . "</h3>";
             echo $row['Txt_description'];
             echo "<br>";
+            echo "<nav>";
+            echo "<a href='./updateNews.php'>Modifier</a>";
+            echo "<a href='./func.php?deleteNews=" . $row['idNews'] . "'>Supprimer</a>";
+            echo "</nav>";
             echo "</div>";
         }
     } catch (PDOException $ex) {
         echo 'An Error occured!'; // user friendly message
         error_log($ex->getMessage());
     }
+}
+
+//Fonction pour supprimer la nouvelle choisit
+function deleteNews($idNews) {
+    $db = dbConnect();
+
+    $req = $db->prepare("DELETE FROM tbl_news WHERE idNews = ?");
+    $req->execute(array($idNews));
+}
+
+if (isset($_GET['deleteNews'])){
+    deleteNews($_GET['deleteNews']);
 }

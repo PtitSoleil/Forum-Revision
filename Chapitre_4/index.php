@@ -12,7 +12,7 @@ require_once 'func.php';
 <html>
     <head>
         <meta charset="UTF-8">
-        <title></title>
+        <title>Connexion !</title>
         <link rel="stylesheet" type="text/css" href="./css/style.css">
     </head>
     <body>

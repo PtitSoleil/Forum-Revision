@@ -12,10 +12,11 @@ require_once './func.php';
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Vous êtes connecté !</title>
-       <link rel="stylesheet" type="text/css" href="./css/style.css">
+        <title>Modifier !</title>
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
     </head>
     <body>
+        <h1>Mise à jour d'une nouvelle</h1>
         <?php
         if (isset($errors['title'])) {
             echo "<h2>" . $errors['title'] . "</h2>";
@@ -23,15 +24,6 @@ require_once './func.php';
         echo "<br>";
         if (isset($errors['description'])) {
             echo "<h2>" . $errors['description'] . "</h2>";
-        }
-        $db = dbConnect();
-        try {
-            foreach ($db->query('SELECT * FROM tbl_user WHERE idUser = "' . $_SESSION['idUser'] . '"') as $row) {
-                echo "<h1>Bonjour " . $row['Txt_surname'] . " " . $row['Txt_name'] . ", voici votre fil d'actualité</h1>";
-            }
-        } catch (PDOException $ex) {
-            echo 'An Error occured!'; // user friendly message
-            error_log($ex->getMessage());
         }
         ?>
         <form method='post' action="">
@@ -50,8 +42,9 @@ require_once './func.php';
                 <input type="submit" name="updateNews" value="Modifier">
             </fieldset>
         </form>
-        <form method="post" action="logout.php"> 
-            <button type="submit" name="logout">Déconnexion</button>
-        </form>
-    </body>
+        <nav>
+            <a href="./main.php">Retour</a>
+        </nav>
+    </form>
+</body>
 </html>
