@@ -147,9 +147,9 @@ if (filter_has_var(INPUT_POST, 'addNews')) {
 function showNews() {
     $db = dbConnect();
     try {
-        foreach ($db->query('SELECT * FROM tbl_news') as $row) {
+        foreach ($db->query('SELECT * FROM tbl_user AS u JOIN tbl_news AS n WHERE u.idUser = n.idUser') as $row) {
             echo "<div id='news'>";
-            echo "Auteur :" . $row['idUser'];
+            echo "Auteur : " . $row['Txt_surname'] . " " . $row['Txt_name'];
             echo "<br>";
             echo "Posté le " . $row['creationDate'] . ". Dernière modification le " . $row['lastEditDate'];
             echo "<h3>" . $row['Txt_title'] . "</h3>";
@@ -175,6 +175,11 @@ function deleteNews($idNews) {
     $req->execute(array($idNews));
 }
 
-if (isset($_GET['deleteNews'])){
+//Traitement
+if (isset($_GET['deleteNews'])) {
     deleteNews($_GET['deleteNews']);
+}
+
+function updateNews() {
+    
 }
